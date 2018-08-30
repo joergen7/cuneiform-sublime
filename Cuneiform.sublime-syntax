@@ -1,0 +1,108 @@
+%YAML 1.2
+---
+
+name: Cuneiform
+file_extensions:
+  - cfl
+scope: source.cfl
+
+contexts:
+  prototype:
+    - include: comments
+
+  main:
+    - include: keywords
+    - include: types
+    - include: languages
+    - include: id
+    - include: body
+    - include: numbers
+    - include: strings
+    - include: files
+    - include: booleans
+    - include: assignments
+    - include: operators
+
+  keywords:
+    - match: '\b(def|do|else|end|error|fold|for|if|import|in|let|then)\b'
+      scope: keyword.control.cfl
+
+  types:
+    - match: '(Str|Bool|File|Ntv|Frn)'
+      scope: entity.name.type.cfl
+
+  languages:
+    - match: '\b(Awk|Bash|Erlang|Java|Matlab|Octave|Perl|Python|R|Racket)\b'
+      scope: entity.name.label.cfl
+
+  id:
+    - match: '[A-Za-z][A-Za-z0-9\.\-_]*'
+      scope: variable.language.cfl
+
+  body:
+    - match: '\*\{'
+      scope: punctuation.definition.string.begin.cfl
+      push: inside_body
+
+  inside_body:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.triple.cfl
+    - match: '\.'
+      scope: constant.character.escape.cfl
+    - match: '\}\*'
+      scope: punctuation.definition.string.end.cfl
+      pop: true
+
+  numbers:
+    - match: '\b(-)?([0-9]|[1-9][0-9]*)\b'
+      scope: constant.numeric.cfl
+
+  strings:
+    - match: '"'
+      scope: punctuation.definition.string.begin.cfl
+      push: inside_string
+
+  inside_string:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.double.cfl
+    - match: '\.'
+      scope: constant.character.escape.cfl
+    - match: '"'
+      scope: punctuation.definition.string.end.cfl
+      pop: true
+
+  files:
+    - match: ''''
+      scope: punctuation.definition.string.begin.cfl
+      push: inside_file
+
+  inside_file:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.single.cfl
+    - match: '\.'
+      scope: constant.character.escape.cfl
+    - match: ''''
+      scope: punctuation.definition.string.end.cfl
+      pop: true
+
+  booleans:
+    - match: '\b(true|false)\b'
+      scope: constant.other.cfl
+
+
+  assignments:
+    - match: '([\:=]|<-|->)'
+      scope: keyword.operator.assignment.cfl
+
+  operators:
+    - match: '(and|or|not|isnil|\+|==)'
+      scope: keyword.operator.cfl
+
+
+  comments:
+    - match: '[#%]'
+      scope: punctuation.definition.comment.cfl
+      push:
+        - meta_scope: comment.line.percentage.cfl
+        - match: $\n?
+          pop: true
