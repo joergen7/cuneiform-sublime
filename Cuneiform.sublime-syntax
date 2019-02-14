@@ -32,7 +32,7 @@ contexts:
       scope: entity.name.type.cfl
 
   languages:
-    - match: '\b(Awk|Bash|Erlang|Java|Matlab|Octave|Perl|Python|R|Racket)\b'
+    - match: '\b(Bash|Elixir|Erlang|Java|Javascript|Matlab|Octave|Perl|Python|R|Racket)\b'
       scope: entity.name.label.cfl
 
   id:
